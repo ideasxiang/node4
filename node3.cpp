@@ -12,6 +12,7 @@ class Graph
 {
 public:
 	Graph(double n, int range);
+	vector<vector<int>> getMatrix(){ return matrix; }
 	int V() { return SIZE * SIZE; };
 	int E() { return (SIZE * (SIZE - 1)) / 2; }
 	bool adjacent(int x, int y);
@@ -27,6 +28,13 @@ private:
 	vector<vector<int>> matrix;
 };
 
+class queue_element{
+public:
+	queue_element(int n = 0, int u = 0) :node(n), cost(u) {}
+	int node;
+	int cost;
+};
+
 class PriorityQueue
 {
 public:
@@ -34,28 +42,43 @@ public:
 	void print();
 	void chgPriority(int node);
 	void minPrioirty();
-	bool contains(int queue_element);
-	void insert(int queue_element) { x.insert(x.begin(), queue_element); };
-	int top() { return x[0]; };
+	bool contains(int q);
+	void insert(int q) { x.insert(x.begin(), queue_element(q)); };
+	queue_element top() { return x[0]; };
 	int size() { return x.size(); };
 
 private:
-	vector<int> x;
+	vector<queue_element> x;
 };
 
 class ShortestPath
 {
 public:
-	void vertices(Graph graph);
+	ShortestPath(Graph g) :graph(g) {}
+	void vertices();
 	void path(int u, int w);
 	int path_size(int u, int w);
+private:
+	Graph graph;
+	vector<vector<int>> matrix = graph.getMatrix();
 };
 
 void ShortestPath::path(int u, int w){
-	
+	int old_size = 0, c_size = 0, cost = 0;
+	vector<bool> close(SIZE, false);
+	vector<bool> open(SIZE, false);
+	open[u] = true;
+	while (c_size < SIZE){
+		for (int i = 0; i < SIZE; ++i){
+			for (int j = i; j < SIZE; ++j){
+				
+				c_size++;
+			}
+		}
+	}
 }
 
-void ShortestPath::vertices(Graph graph){
+void ShortestPath::vertices(){
 	for (int i = 0; i < SIZE; ++i){
 		graph.neighbors(i);
 		cout << endl;
@@ -63,17 +86,17 @@ void ShortestPath::vertices(Graph graph){
 	cout << endl;
 }
 
-void PriorityQueue::chgPriority(int node) {
-	vector<int> temp = x;
+void PriorityQueue::chgPriority(int n) {
+	vector<queue_element> temp = x;
 	for (int i = 1; i < x.size(); ++i) {
 		x[i] = temp.at(i - 1);
 	}
-	x[0] = node;
+	x[0].node = n;
 }
 
 void PriorityQueue::print() {
 	for (int i = 0; i < x.size(); ++i) {
-		cout << x[i] << ", ";
+		cout << x[i].node << ", ";
 	}
 	cout << endl;
 }
@@ -83,9 +106,9 @@ void PriorityQueue::minPrioirty() {
 	x.pop_back();
 }
 
-bool PriorityQueue::contains(int node) {
+bool PriorityQueue::contains(int n) {
 	for (int i = 0; i < x.size(); ++i) {
-		if (x[i] == node) {
+		if (x[i].node == n) {
 			return true;
 		}
 	}
@@ -267,6 +290,7 @@ int main()
 	// q.print();
 	
 	cout << endl;
-	ShortestPath d;
-	d.vertices(a);
+	ShortestPath d(a);
+	d.vertices();
+	d.path(0, 1);
 }

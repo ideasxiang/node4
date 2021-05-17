@@ -38,12 +38,11 @@ public:
 class PriorityQueue
 {
 public:
-	PriorityQueue() :x(SIZE) {};
 	void print();
 	void chgPriority(int node);
-	void minPrioirty();
+	queue_element minPriority();
 	bool contains(int q);
-	void insert(int q) { x.insert(x.begin(), queue_element(q)); };
+	void insert(int q, int c) { x.insert(x.begin(), queue_element(q, c)); };
 	queue_element top() { return x[0]; };
 	int size() { return x.size(); };
 
@@ -64,15 +63,15 @@ private:
 };
 
 void ShortestPath::path(int u, int w){
-	int old_size = 0, c_size = 0, cost = 0;
+	int old_size = 0, c_size = 0, total_cost = 0;
 	vector<bool> close(SIZE, false);
-	vector<bool> open(SIZE, false);
-	open[u] = true;
-	while (c_size < SIZE){
+	PriorityQueue q;
+	q.insert(u, total_cost);
+	while (q.size() != 0){
+		queue_element temp = q.minPriority();
 		for (int i = 0; i < SIZE; ++i){
-			for (int j = i; j < SIZE; ++j){
-				
-				c_size++;
+			if (matrix[temp.node][i]){
+				q.insert(i, total_cost + temp.cost);
 			}
 		}
 	}
@@ -101,9 +100,11 @@ void PriorityQueue::print() {
 	cout << endl;
 }
 
-void PriorityQueue::minPrioirty() {
+queue_element PriorityQueue::minPriority() {
+	queue_element temp = x.front();
 	x.front() = move(x.back());
 	x.pop_back();
+	return temp;
 }
 
 bool PriorityQueue::contains(int n) {
